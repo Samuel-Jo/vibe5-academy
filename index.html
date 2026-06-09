@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>바이브코딩 5일 캠프 — 비전공자도 AI 앱을 만든다</title>
+<meta name="description" content="비전공자도 5일 만에 AI 앱 하나를 기획→배포→검증→발표한다. 바이브코딩 7대 원칙과 DAY별 체크리스트.">
+<style>
+/* ─── 리셋 ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:#0f1117;color:#e2e8f0;line-height:1.6;min-height:100vh}
+
+/* ─── 토큰 ─── */
+:root{
+  --bg:       #0f1117;
+  --bg-card:  #1a1f2e;
+  --bg-card2: #232838;
+  --border:   #2d3348;
+  --text:     #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-hint:#64748b;
+  --brand:    #5b8def;
+
+  --spec:   #5b8def;
+  --build:  #a855f7;
+  --verify: #10b981;
+  --ship:   #f59e0b;
+
+  --radius: 12px;
+  --shadow: 0 4px 24px rgba(0,0,0,.45);
+}
+
+/* ─── 공통 ─── */
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+a:focus-visible{outline:2px solid var(--brand);outline-offset:3px;border-radius:3px}
+button:focus-visible{outline:2px solid var(--brand);outline-offset:3px;border-radius:3px}
+.container{max-width:1100px;margin:0 auto;padding:0 20px}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:.75rem;font-weight:600;border:1px solid currentColor;opacity:.85}
+
+/* ─── 네비 ─── */
+nav{position:sticky;top:0;z-index:100;background:rgba(15,17,23,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+nav .inner{display:flex;align-items:center;gap:0;padding:0 20px;max-width:1100px;margin:0 auto;overflow-x:auto;scrollbar-width:none}
+nav .inner::-webkit-scrollbar{display:none}
+nav .logo{font-weight:800;font-size:1rem;color:var(--text);white-space:nowrap;padding:14px 16px 14px 0;border-right:1px solid var(--border);margin-right:8px;flex-shrink:0}
+nav a.navlink{padding:14px 14px;font-size:.85rem;color:var(--text-dim);white-space:nowrap;transition:color .2s;flex-shrink:0}
+nav a.navlink:hover{color:var(--text);text-decoration:none}
+
+/* ─── 히어로 ─── */
+#hero{padding:100px 20px 80px;text-align:center;background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(91,141,239,.12) 0%, transparent 70%)}
+#hero .eyebrow{font-size:.85rem;font-weight:600;color:var(--brand);letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px}
+#hero h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:900;line-height:1.15;margin-bottom:20px;background:linear-gradient(135deg,#e2e8f0 30%,var(--brand));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+#hero .sub{font-size:clamp(1rem,2.5vw,1.3rem);color:var(--text-dim);max-width:640px;margin:0 auto 24px}
+#hero .core{font-size:1rem;color:var(--text-hint);margin-bottom:40px;border:1px solid var(--border);display:inline-block;padding:8px 22px;border-radius:8px}
+#hero .core strong{color:var(--text)}
+.cta-group{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{padding:12px 28px;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;border:none}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(91,141,239,.4)}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--bg-card);transform:translateY(-2px)}
+
+/* ─── 진도율 바 ─── */
+#progress-bar-section{padding:20px;background:var(--bg-card);border-bottom:1px solid var(--border)}
+#progress-bar-section .inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+#progress-bar-section .label{font-size:.9rem;color:var(--text-dim);white-space:nowrap}
+#progress-track{flex:1;min-width:160px;height:8px;background:var(--bg-card2);border-radius:99px;overflow:hidden}
+#progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--brand),var(--verify));transition:width .35s ease}
+#progress-pct{font-weight:700;font-size:.9rem;color:var(--text);white-space:nowrap;min-width:38px}
+#btn-reset{padding:5px 14px;font-size:.78rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:background .15s}
+#btn-reset:hover{background:var(--bg-card2);color:var(--text)}
+
+/* ─── 섹션 공통 ─── */
+section{padding:80px 0}
+section h2{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;margin-bottom:12px}
+section .section-sub{color:var(--text-dim);font-size:1.05rem;margin-bottom:48px;max-width:680px}
+.section-label{font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);margin-bottom:10px}
+
+/* ─── 원칙(Philosophy) ─── */
+#philosophy{background:var(--bg)}
+.why-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:48px;max-width:760px}
+.why-box h3{font-size:1.1rem;font-weight:700;margin-bottom:12px;color:var(--brand)}
+.why-box p{color:var(--text-dim);line-height:1.75;margin-bottom:10px}
+.why-box p:last-child{margin-bottom:0}
+.why-box ul{margin:10px 0 10px 20px;color:var(--text-dim)}
+.why-box ul li{margin-bottom:4px}
+.why-box ul li strong{color:var(--text)}
+
+.principles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-bottom:56px}
+.principle-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:border-color .2s,transform .2s}
+.principle-card:hover{border-color:var(--brand);transform:translateY(-3px)}
+.p-num{font-size:2rem;font-weight:900;color:var(--border);line-height:1;margin-bottom:8px}
+.p-title{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:6px}
+.p-core{font-size:.88rem;color:var(--text-dim);margin-bottom:8px;line-height:1.55}
+.p-analogy{font-size:.8rem;color:var(--text-hint);font-style:italic;border-left:2px solid var(--border);padding-left:10px;line-height:1.5}
+
+/* 사람의 3가지 역할 표 */
+.roles-table{width:100%;border-collapse:collapse;max-width:760px}
+.roles-table th,.roles-table td{padding:14px 18px;border:1px solid var(--border);font-size:.92rem;text-align:left}
+.roles-table thead tr{background:var(--bg-card2)}
+.roles-table thead th{color:var(--text-dim);font-weight:600}
+.roles-table tbody tr{background:var(--bg-card)}
+.roles-table tbody tr:nth-child(even){background:var(--bg-card2)}
+.roles-table td:first-child{font-weight:700;color:var(--text)}
+.roles-table td:last-child .tag-row{display:flex;gap:6px;flex-wrap:wrap}
+
+/* ─── 타임라인 ─── */
+#timeline{background:var(--bg-card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.stages-wrapper{display:flex;flex-direction:column;gap:0}
+.stage-block{border-radius:var(--radius);border:1px solid var(--border);background:var(--bg);overflow:hidden;margin-bottom:4px}
+.stage-header{display:flex;align-items:flex-start;gap:18px;padding:24px 28px}
+.stage-accent-bar{width:5px;border-radius:99px;flex-shrink:0;min-height:60px;align-self:stretch}
+.stage-meta{flex:1}
+.stage-range{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.stage-title{font-size:1.2rem;font-weight:800;margin-bottom:4px}
+.stage-subtitle{font-size:.88rem;color:var(--text-dim);margin-bottom:10px}
+.critical-moment{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:.84rem;line-height:1.55}
+.critical-moment strong{display:block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;opacity:.7}
+.connector-bar{padding:10px 28px;font-size:.82rem;color:var(--text-dim);font-style:italic;border-top:1px dashed var(--border);background:var(--bg-card)}
+
+/* ─── DAY 아코디언 ─── */
+#days{background:var(--bg)}
+.accordion{display:flex;flex-direction:column;gap:12px}
+.acc-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s}
+.acc-item[data-open="true"]{border-color:var(--accent-color,var(--border))}
+.acc-trigger{width:100%;background:none;border:none;color:var(--text);cursor:pointer;padding:22px 24px;display:flex;align-items:center;gap:16px;text-align:left;transition:background .15s}
+.acc-trigger:hover{background:var(--bg-card2)}
+.acc-day-badge{padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:800;letter-spacing:.07em;color:#fff;white-space:nowrap;flex-shrink:0}
+.acc-title{font-size:1rem;font-weight:700;flex:1}
+.acc-summary{font-size:.82rem;color:var(--text-dim);flex:2;display:none}
+.acc-chevron{margin-left:auto;font-size:1rem;color:var(--text-dim);transition:transform .3s;flex-shrink:0}
+.acc-item[data-open="true"] .acc-chevron{transform:rotate(180deg)}
+.acc-body{display:none;padding:0 24px 28px}
+.acc-item[data-open="true"] .acc-body{display:block}
+
+.day-section-title{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-hint);margin:20px 0 10px}
+.day-objective{background:rgba(255,255,255,.03);border-left:3px solid var(--accent-color,var(--brand));padding:12px 16px;border-radius:0 8px 8px 0;font-size:.9rem;color:var(--text-dim);line-height:1.6;margin-bottom:8px}
+
+/* 체크리스트 */
+.checklist{list-style:none;display:flex;flex-direction:column;gap:8px}
+.checklist li{display:flex;flex-direction:column;gap:2px}
+.check-row{display:flex;align-items:flex-start;gap:10px}
+.check-row input[type="checkbox"]{width:17px;height:17px;flex-shrink:0;accent-color:var(--accent-color,var(--brand));cursor:pointer;margin-top:2px}
+.check-row label{font-size:.9rem;color:var(--text);cursor:pointer;line-height:1.5}
+.check-row input:checked+label{color:var(--text-dim);text-decoration:line-through;text-decoration-color:var(--text-hint)}
+.hint{font-size:.78rem;color:var(--text-hint);padding-left:27px;line-height:1.5}
+
+/* 산출물 */
+.deliverables{display:flex;flex-direction:column;gap:6px}
+.deliv-row{display:flex;gap:12px;align-items:baseline}
+.deliv-file{font-family:monospace;font-size:.82rem;color:var(--accent-color,var(--brand));flex-shrink:0;min-width:130px}
+.deliv-desc{font-size:.84rem;color:var(--text-dim)}
+
+/* 도구 배지 */
+.tools-row{display:flex;flex-wrap:wrap;gap:7px}
+.tool-tag{background:var(--bg-card2);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:.76rem;color:var(--text-dim)}
+
+/* 팁 */
+.tips-list{display:flex;flex-direction:column;gap:6px}
+.tip-item{font-size:.86rem;color:var(--text-dim);padding:8px 12px;background:var(--bg-card2);border-radius:7px;border-left:2px solid var(--accent-color,var(--brand))}
+.tip-item::before{content:"";margin-right:0}
+
+/* ─── 완성 예시 ─── */
+#examples{background:var(--bg-card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.examples-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.example-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:border-color .2s,transform .2s}
+.example-card:hover{border-color:var(--ship);transform:translateY(-3px)}
+.example-badge{margin-bottom:14px}
+.example-card h3{font-size:1.05rem;font-weight:800;margin-bottom:8px}
+.example-desc{font-size:.88rem;color:var(--text-dim);margin-bottom:16px;line-height:1.6}
+.example-highlight{font-size:.82rem;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:7px;padding:6px 12px;color:var(--ship);margin-bottom:14px;font-weight:600}
+.example-links{display:flex;gap:12px;flex-wrap:wrap}
+.example-links a{font-size:.82rem;padding:6px 14px;border-radius:6px;border:1px solid var(--border);color:var(--text-dim);transition:background .15s,color .15s}
+.example-links a:hover{background:var(--bg-card2);color:var(--text);text-decoration:none}
+
+/* ─── 산출물 6종 ─── */
+#deliverables{background:var(--bg)}
+.deliv-note{font-size:.85rem;color:var(--text-hint);background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px 18px;margin-bottom:32px;max-width:680px}
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.deliv-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+.deliv-card .file{font-family:monospace;font-size:.9rem;font-weight:700;margin-bottom:6px}
+.deliv-card .when{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;opacity:.8}
+.deliv-card .desc{font-size:.84rem;color:var(--text-dim);line-height:1.55}
+
+/* ─── 푸터 ─── */
+footer{padding:40px 20px;text-align:center;border-top:1px solid var(--border);background:var(--bg-card)}
+footer p{color:var(--text-dim);font-size:.85rem;margin-bottom:6px}
+footer a{color:var(--text-hint);font-size:.82rem}
+footer a:hover{color:var(--text)}
+
+/* ─── 반응형 ─── */
+@media(max-width:680px){
+  nav a.navlink{padding:12px 10px;font-size:.78rem}
+  nav .logo{padding:12px 10px 12px 0;font-size:.88rem}
+  #hero{padding:70px 16px 60px}
+  section{padding:56px 0}
+  .acc-summary{display:none!important}
+  .stage-header{padding:18px 18px}
+  .acc-trigger{padding:18px 18px}
+  .acc-body{padding:0 18px 22px}
+  .deliv-file{min-width:90px}
+  .roles-table th,.roles-table td{padding:10px 12px;font-size:.82rem}
+}
+@media(min-width:800px){
+  .acc-summary{display:block}
+  .stages-wrapper{flex-direction:row;gap:8px;align-items:stretch}
+  .stage-block{flex:1;margin-bottom:0}
+  .stage-header{flex-direction:column}
+  .stage-accent-bar{width:100%;height:5px;min-height:unset;align-self:unset}
+  .stage-accent-bar{display:block}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ 네비게이션 ═══ -->
+<nav role="navigation" aria-label="주요 섹션">
+  <div class="inner">
+    <span class="logo">바이브코딩 5일</span>
+    <a class="navlink" href="#hero">홈</a>
+    <a class="navlink" href="#philosophy">왜 5일?</a>
+    <a class="navlink" href="#timeline">타임라인</a>
+    <a class="navlink" href="#days">DAY별</a>
+    <a class="navlink" href="#examples">완성 예시</a>
+    <a class="navlink" href="#deliverables">산출물</a>
+  </div>
+</nav>
+
+<!-- ═══ 진도율 바 ═══ -->
+<div id="progress-bar-section" aria-label="전체 학습 진도">
+  <div class="inner">
+    <span class="label">전체 진도</span>
+    <div id="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div id="progress-fill" style="width:0%"></div>
+    </div>
+    <span id="progress-pct">0%</span>
+    <span style="font-size:.8rem;color:var(--text-hint)">26개 체크리스트</span>
+    <button id="btn-reset" onclick="resetProgress()" aria-label="진도 초기화">초기화</button>
+  </div>
+</div>
+
+<!-- ═══ 섹션 1 · 히어로 ═══ -->
+<section id="hero" aria-label="소개">
+  <div class="eyebrow">비전공자를 위한 AI 앱 개발 실전 과정</div>
+  <h1>바이브코딩 5일 캠프</h1>
+  <p class="sub">비전공자도 5일 만에 AI 앱 하나를 기획 → 배포 → 검증 → 발표한다.</p>
+  <p class="core"><strong>코드는 AI가,</strong> 사람은 의도·검증·방향에 집중한다.</p>
+  <div class="cta-group">
+    <a href="#days" class="btn btn-primary">로드맵 보기</a>
+    <a href="#examples" class="btn btn-secondary">완성 예시 보기</a>
+  </div>
+</section>
+
+<!-- ═══ 섹션 2 · 왜 5일인가 + 7대 원칙 ═══ -->
+<section id="philosophy">
+  <div class="container">
+    <div class="section-label">철학 · Philosophy</div>
+    <h2>왜 5일이 가능한가</h2>
+    <p class="section-sub">코드를 짜는 데 걸리던 시간 대부분을 AI가 가져갔습니다. 사람이 집중해야 할 일이 달라졌습니다.</p>
+
+    <div class="why-box">
+      <h3>달라진 것과 달라지지 않은 것</h3>
+      <p>예전에는 "버튼 하나 만들기"도 문법을 찾고, 변수를 선언하고, 디버깅하는 데 하루가 걸렸습니다. 지금은 AI에게 "이런 버튼을 만들어 줘"라고 말하면 초안이 나옵니다.</p>
+      <ul>
+        <li><strong>사람이 할 일:</strong> 무엇을 만들지 결정하기(의도), 잘 만들어졌는지 확인하기(검증), 방향이 틀리면 바로잡기(방향)</li>
+        <li><strong>AI가 할 일:</strong> 코드 작성, 문서 초안, 반복 테스트</li>
+      </ul>
+      <p>16일 커리큘럼의 핵심 가치(의도·측정·정직·배포)는 그대로입니다. 달라진 것은 사람이 코드를 직접 치는 시간이 줄고, AI와 대화하는 시간이 늘었다는 것입니다.</p>
+    </div>
+
+    <div class="section-label" style="margin-bottom:18px">바이브코딩 7대 원칙</div>
+    <div class="principles-grid">
+
+      <div class="principle-card">
+        <div class="p-num">01</div>
+        <div class="p-title">의도·스펙 우선 (Vibe Spec)</div>
+        <div class="p-core">코드보다 '무엇을·왜'를 AI와 대화로 먼저 정한다. DAY1에 spec.md 한 장을 작성해 AI에게 나침반을 준다.</div>
+        <div class="p-analogy">요리사(AI)에게 "맛있는 거 만들어 줘"가 아니라 "손님은 10대, 매운 것 못 먹음, 예산 5천원"처럼 — 스펙은 AI에게 주는 '레시피 요구사항'이다.</div>
+      </div>
+
+      <div class="principle-card">
+        <div class="p-num">02</div>
+        <div class="p-title">AI 에이전트 협업</div>
+        <div class="p-core">사람은 기획·검증·방향을 맡고, 에이전트(AI)는 구현을 맡는다. AI에게 "왜 이렇게 했는지"도 함께 물어본다.</div>
+        <div class="p-analogy">건축주는 "창문 남향, 방 3개"를 결정하고 도면은 설계사(AI)가 그린다. 건축주는 "이 방이 너무 좁다"고 피드백한다.</div>
+      </div>
+
+      <div class="principle-card">
+        <div class="p-num">03</div>
+        <div class="p-title">첫날부터 매일 배포</div>
+        <div class="p-core">Hello World를 DAY1에 실배포하고, 매일 작동하는 버전을 유지한다. 배포해봐야 실제 문제가 보인다.</div>
+        <div class="p-analogy">요리 수업에서 레시피를 다 외운 뒤 요리하는 것이 아니라, 첫날 계란 후라이부터 만들어 먹어봐야 불 세기 감이 온다.</div>
+      </div>
+
+      <div class="principle-card">
+        <div class="p-num">04</div>
+        <div class="p-title">Eval 주도</div>
+        <div class="p-core">AI는 틀린다. Pass Rate와 골든셋으로 얼마나 잘하는지 측정한다. "좋아졌다" 금지 — 숫자로 말한다.</div>
+        <div class="p-analogy">아르바이트생이 잘하는지 확인하려면 "오늘 주문 20건 중 몇 건을 정확히 처리했나"를 세어봐야 한다. "잘하는 것 같던데요"는 측정이 아니다.</div>
+      </div>
+
+      <div class="principle-card">
+        <div class="p-num">05</div>
+        <div class="p-title">AI-네이티브 기능 기본</div>
+        <div class="p-core">규칙만으로 짜지 않는다. LLM·RAG·가드레일을 기본값으로 설계한다. 규칙→AI 하이브리드가 자연스러운 진화다.</div>
+        <div class="p-analogy">도서관 안내를 '가나다순 색인표'만으로 하던 시대에서, '사서에게 말로 물어보면 관련 책 다 찾아줘'로 바뀐 것과 같다.</div>
+      </div>
+
+      <div class="principle-card">
+        <div class="p-num">06</div>
+        <div class="p-title">Docs as Code + AI 자동 문서</div>
+        <div class="p-core">코드가 바뀌면 문서도 자동으로 바뀐다. 커밋할 때 AI가 CHANGELOG 초안을 자동 생성한다.</div>
+        <div class="p-analogy">제품 사용설명서가 제품 안에 붙어 있어서, 제품이 바뀌면 설명서도 같이 인쇄되어 나오는 것과 같다.</div>
+      </div>
+
+      <div class="principle-card">
+        <div class="p-num">07</div>
+        <div class="p-title">정직한 한계</div>
+        <div class="p-core">AI가 못하는 것, 틀리는 경우를 숨기지 않고 평가와 발표에 명시한다. 한계를 드러내야 신뢰가 생긴다.</div>
+        <div class="p-analogy">내비게이션이 "이 길은 실시간 교통정보가 없어 정확하지 않을 수 있습니다"라고 말하는 것 — 모르면서 자신 있는 척하는 내비보다 훨씬 유용하다.</div>
+      </div>
+
+    </div>
+
+    <!-- 사람이 해야 할 3가지 -->
+    <div class="section-label" style="margin-bottom:16px">사람이 해야 할 3가지</div>
+    <div style="overflow-x:auto">
+      <table class="roles-table" aria-label="바이브코딩 시대 사람의 역할">
+        <thead>
+          <tr>
+            <th scope="col">역할</th>
+            <th scope="col">하는 일</th>
+            <th scope="col">대응 원칙</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>의도 결정자</td>
+            <td>무엇을·왜 만드는지 정의</td>
+            <td>원칙 1, 2</td>
+          </tr>
+          <tr>
+            <td>측정자</td>
+            <td>잘 되는지 숫자로 확인</td>
+            <td>원칙 4</td>
+          </tr>
+          <tr>
+            <td>정직한 보고자</td>
+            <td>한계와 실패를 드러내기</td>
+            <td>원칙 7</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:16px;font-size:.88rem;color:var(--text-hint)">코드는 AI가 빠르게 짭니다. 사람이 의도·검증·방향에 집중할 때 5일이 16일보다 더 충실해질 수 있습니다.</p>
+
+  </div>
+</section>
+
+<!-- ═══ 섹션 3 · 타임라인 ═══ -->
+<section id="timeline">
+  <div class="container">
+    <div class="section-label">4단계 로드맵</div>
+    <h2>4단계 → 5일 타임라인</h2>
+    <p class="section-sub">각 단계는 다음 단계를 위한 기반을 쌓습니다. 결정적 순간을 놓치지 마세요.</p>
+
+    <div class="stages-wrapper">
+
+      <!-- 1단계 · Vibe Spec -->
+      <div class="stage-block">
+        <div class="stage-header">
+          <div class="stage-accent-bar" style="background:#5b8def"></div>
+          <div class="stage-meta">
+            <div class="stage-range" style="color:#5b8def">DAY 1</div>
+            <div class="stage-title">1단계 · Vibe Spec</div>
+            <div class="stage-subtitle">의도 확정 + 첫 배포</div>
+            <div class="critical-moment">
+              <strong style="color:#5b8def">결정적 순간</strong>
+              스펙이 흐리면 AI도 헤맨다. 의도 한 장을 먼저 완성한다.
+            </div>
+          </div>
+        </div>
+        <div class="connector-bar">의도와 배포 파이프라인이 갖춰졌습니다. 이제 AI에게 V1 코드를 맡길 시간입니다.</div>
+      </div>
+
+      <!-- 2단계 · 바이브 빌드 -->
+      <div class="stage-block">
+        <div class="stage-header">
+          <div class="stage-accent-bar" style="background:#a855f7"></div>
+          <div class="stage-meta">
+            <div class="stage-range" style="color:#a855f7">DAY 2~3</div>
+            <div class="stage-title">2단계 · 바이브 빌드</div>
+            <div class="stage-subtitle">V1 베이스라인 → AI-네이티브 고도화</div>
+            <div class="critical-moment">
+              <strong style="color:#a855f7">결정적 순간</strong>
+              규칙→AI 하이브리드로 Pass Rate를 단계적으로 끌어올린다.
+            </div>
+          </div>
+        </div>
+        <div class="connector-bar">작동하는 버전이 배포됐습니다. 이제 숫자로 증명할 시간입니다.</div>
+      </div>
+
+      <!-- 3단계 · 검증 -->
+      <div class="stage-block">
+        <div class="stage-header">
+          <div class="stage-accent-bar" style="background:#10b981"></div>
+          <div class="stage-meta">
+            <div class="stage-range" style="color:#10b981">DAY 4</div>
+            <div class="stage-title">3단계 · 검증</div>
+            <div class="stage-subtitle">Eval·개선·정직한 한계 기록</div>
+            <div class="critical-moment">
+              <strong style="color:#10b981">결정적 순간</strong>
+              골든셋 Pass Rate로 '좋아졌다'를 숫자로 증명한다.
+            </div>
+          </div>
+        </div>
+        <div class="connector-bar">정직한 한계가 기록됐습니다. 이제 세상에 공개하고 발표할 차례입니다.</div>
+      </div>
+
+      <!-- 4단계 · 완성·공유 -->
+      <div class="stage-block">
+        <div class="stage-header">
+          <div class="stage-accent-bar" style="background:#f59e0b"></div>
+          <div class="stage-meta">
+            <div class="stage-range" style="color:#f59e0b">DAY 5</div>
+            <div class="stage-title">4단계 · 완성·공유</div>
+            <div class="stage-subtitle">정식 배포 + 전·후 비교 + 발표</div>
+            <div class="critical-moment">
+              <strong style="color:#f59e0b">결정적 순간</strong>
+              같은 사용자에게 전·후를 비교해 가치를 증명한다.
+            </div>
+          </div>
+        </div>
+        <div class="connector-bar">5일의 여정이 끝났습니다. 당신의 앱은 이제 누군가의 문제를 해결하는 서비스가 되었습니다.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 섹션 4 · DAY별 상세 ═══ -->
+<section id="days">
+  <div class="container">
+    <div class="section-label">DAY별 상세</div>
+    <h2>5일 체크리스트</h2>
+    <p class="section-sub">각 DAY 제목을 클릭하면 상세 내용이 펼쳐집니다. 체크리스트는 새로고침 후에도 저장됩니다.</p>
+
+    <div class="accordion" id="accordion">
+
+      <!-- DAY 1 -->
+      <div class="acc-item" id="acc-1" data-open="false" style="--accent-color:#5b8def">
+        <button class="acc-trigger" onclick="toggleAcc(1)" aria-expanded="false" aria-controls="acc-body-1">
+          <span class="acc-day-badge" style="background:#5b8def">DAY 1</span>
+          <span class="acc-title">의도·스펙 + 첫 배포</span>
+          <span class="acc-summary">코드보다 '무엇을·왜'를 AI와 대화로 하루에 확정하고, 첫 화면을 바로 배포한다.</span>
+          <span class="acc-chevron" aria-hidden="true">&#9660;</span>
+        </button>
+        <div class="acc-body" id="acc-body-1" role="region" aria-label="DAY 1 상세">
+          <div class="day-section-title">오늘의 목표</div>
+          <div class="day-objective">하루 만에 의도(스펙)·측정 가능한 성공 기준을 확정하고, 배포 파이프라인을 깔아 첫 배포를 끝낸다.</div>
+
+          <div class="day-section-title">체크리스트</div>
+          <ul class="checklist" aria-label="DAY 1 체크리스트">
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d1-1" onchange="saveProgress()">
+                <label for="d1-1">AI 에디터(Cursor 또는 Claude Code)·GitHub·Cloudflare Pages 계정을 셋업한다</label>
+              </div>
+              <span class="hint">AI 에디터는 '내 말을 듣고 코드를 써주는 페어 프로그래머'다. 설치만으로 절반은 준비된 것.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d1-2" onchange="saveProgress()">
+                <label for="d1-2">문제·대상 사용자·페인포인트를 AI와 대화로 정리한다</label>
+              </div>
+              <span class="hint">AI에게 '내 생각에 반박해 줘'라고 시켜보자. 글로 써야 모호함이 드러난다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d1-3" onchange="saveProgress()">
+                <label for="d1-3">측정 가능한 성공 기준을 한 문장으로 정의한다</label>
+              </div>
+              <span class="hint">'좋아진다'가 아니라 '판별 정확도 90% 이상'처럼 숫자가 들어가야 한다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d1-4" onchange="saveProgress()">
+                <label for="d1-4">핵심 기능을 3개로 좁힌다</label>
+              </div>
+              <span class="hint">'10개 기능 절반 완성'보다 '3개 기능 완벽 작동'이 5일 안에 끝낼 확률을 높인다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d1-5" onchange="saveProgress()">
+                <label for="d1-5">spec.md(문제·시나리오·성공 기준·핵심 기능 = 의도 한 장)를 작성한다</label>
+              </div>
+              <span class="hint">spec.md는 5일 내내 AI에게 붙여넣을 나침반 문서다. 한 장을 넘기지 않는다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d1-6" onchange="saveProgress()">
+                <label for="d1-6">Hello World를 Cloudflare Pages에 즉시 실배포하고 URL을 확보한다 + README 초안을 작성한다</label>
+              </div>
+              <span class="hint">Cloudflare Pages: GitHub에 push하면 자동으로 전 세계에 배포되는 무료 호스팅 서비스.</span>
+            </li>
+          </ul>
+
+          <div class="day-section-title">산출물</div>
+          <div class="deliverables">
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#5b8def">spec.md</span>
+              <span class="deliv-desc">문제·시나리오·성공 기준·핵심 기능을 담은 의도 한 장</span>
+            </div>
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#5b8def">README.md</span>
+              <span class="deliv-desc">프로젝트 소개 초안</span>
+            </div>
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#5b8def">(배포 URL)</span>
+              <span class="deliv-desc">Cloudflare Pages 첫 배포 주소</span>
+            </div>
+          </div>
+
+          <div class="day-section-title">사용 도구</div>
+          <div class="tools-row">
+            <span class="tool-tag">Cursor</span>
+            <span class="tool-tag">Claude Code</span>
+            <span class="tool-tag">GitHub</span>
+            <span class="tool-tag">Cloudflare Pages</span>
+            <span class="tool-tag">AI 대화</span>
+          </div>
+
+          <div class="day-section-title">AI 팁</div>
+          <div class="tips-list">
+            <div class="tip-item">코드보다 의도. 스펙이 흐리면 AI도 헤맨다.</div>
+            <div class="tip-item">첫날 배포해두면 매일 실제 URL로 돌려볼 수 있다.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 2 -->
+      <div class="acc-item" id="acc-2" data-open="false" style="--accent-color:#a855f7">
+        <button class="acc-trigger" onclick="toggleAcc(2)" aria-expanded="false" aria-controls="acc-body-2">
+          <span class="acc-day-badge" style="background:#a855f7">DAY 2</span>
+          <span class="acc-title">바이브 빌드 1 — 작동 V1 + 배포</span>
+          <span class="acc-summary">AI에게 의도를 전달해 작동하는 최소 V1을 만들고 바로 배포한다(베이스라인 확보).</span>
+          <span class="acc-chevron" aria-hidden="true">&#9660;</span>
+        </button>
+        <div class="acc-body" id="acc-body-2" role="region" aria-label="DAY 2 상세">
+          <div class="day-section-title">오늘의 목표</div>
+          <div class="day-objective">spec.md를 AI에게 주고 작동하는 최소 V1을 만든다. 베이스라인이 있어야 이후 개선을 숫자로 잴 수 있다.</div>
+
+          <div class="day-section-title">체크리스트</div>
+          <ul class="checklist" aria-label="DAY 2 체크리스트">
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d2-1" onchange="saveProgress()">
+                <label for="d2-1">spec.md를 붙여넣고 AI에게 V1 생성을 요청한다 (규칙·간단 로직도 OK)</label>
+              </div>
+              <span class="hint">규칙 기반이란 '문자에 계좌·입금이 포함되면 위험'처럼 단순한 if-else 로직이다. 시작으로 충분하다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d2-2" onchange="saveProgress()">
+                <label for="d2-2">직접 써보며 작동 여부를 확인한다</label>
+              </div>
+              <span class="hint">5가지 시나리오를 손으로 테스트해보자. 틀려도 괜찮다. 기록이 목적이다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d2-3" onchange="saveProgress()">
+                <label for="d2-3">즉시 재배포해 라이브를 갱신한다</label>
+              </div>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d2-4" onchange="saveProgress()">
+                <label for="d2-4">CHANGELOG.md에 v1을 기록한다 (AI 자동 생성 활용)</label>
+              </div>
+              <span class="hint">CHANGELOG: '무엇이 바뀌었나'를 날짜별로 적은 변경 이력 수첩. AI에게 자동 생성 시킨다.</span>
+            </li>
+          </ul>
+
+          <div class="day-section-title">산출물</div>
+          <div class="deliverables">
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#a855f7">CHANGELOG.md</span>
+              <span class="deliv-desc">v1 변경 이력 (AI 자동 생성)</span>
+            </div>
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#a855f7">(작동 V1 코드)</span>
+              <span class="deliv-desc">AI가 생성한 최소 작동 버전</span>
+            </div>
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#a855f7">(배포 URL)</span>
+              <span class="deliv-desc">갱신된 Cloudflare Pages 주소</span>
+            </div>
+          </div>
+
+          <div class="day-section-title">사용 도구</div>
+          <div class="tools-row">
+            <span class="tool-tag">AI 에디터</span>
+            <span class="tool-tag">AI 에이전트</span>
+            <span class="tool-tag">Cloudflare Pages</span>
+          </div>
+
+          <div class="day-section-title">AI 팁</div>
+          <div class="tips-list">
+            <div class="tip-item">부끄러워도 작동부터. 베이스라인이 있어야 개선을 숫자로 잰다.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 3 -->
+      <div class="acc-item" id="acc-3" data-open="false" style="--accent-color:#a855f7">
+        <button class="acc-trigger" onclick="toggleAcc(3)" aria-expanded="false" aria-controls="acc-body-3">
+          <span class="acc-day-badge" style="background:#a855f7">DAY 3</span>
+          <span class="acc-title">바이브 빌드 2 — AI-네이티브 고도화 + 배포</span>
+          <span class="acc-summary">LLM·하이브리드·RAG·가드레일 등 AI-네이티브 기능을 더해 앱을 똑똑하게 만든다.</span>
+          <span class="acc-chevron" aria-hidden="true">&#9660;</span>
+        </button>
+        <div class="acc-body" id="acc-body-3" role="region" aria-label="DAY 3 상세">
+          <div class="day-section-title">오늘의 목표</div>
+          <div class="day-objective">Cloudflare Workers AI 등 키 없는 LLM으로 규칙→AI 하이브리드를 구성하고, 가드레일로 안전을 갖춘 뒤 배포한다.</div>
+
+          <div class="day-section-title">체크리스트</div>
+          <ul class="checklist" aria-label="DAY 3 체크리스트">
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d3-1" onchange="saveProgress()">
+                <label for="d3-1">AI 핵심 기능을 추가한다 (키 없는 Workers AI LLM, 규칙→AI 하이브리드 방식)</label>
+              </div>
+              <span class="hint">Workers AI: Cloudflare 인프라의 LLM. API 키 없이 무료로 사용한다. 하이브리드: 단순한 경우는 규칙이, 복잡한 경우는 AI가 처리한다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d3-2" onchange="saveProgress()">
+                <label for="d3-2">(선택) RAG 또는 도메인 데이터와 결합한다</label>
+              </div>
+              <span class="hint">RAG: '우리 자료 창고'를 AI가 참고하게 만드는 방식. 모델을 재학습시키지 않아도 도메인 지식을 붙일 수 있다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d3-3" onchange="saveProgress()">
+                <label for="d3-3">가드레일·안전 장치를 적용한다 (입력 검증·PII 마스킹·프롬프트 인젝션 방어)</label>
+              </div>
+              <span class="hint">PII 마스킹: 이름·전화번호 같은 개인정보를 가린다. 프롬프트 인젝션: 교묘한 입력으로 AI를 조종하는 공격을 차단한다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d3-4" onchange="saveProgress()">
+                <label for="d3-4">build-notes.md를 작성한다 (기술 선택·핵심 결정·데이터 흐름 — AI 자동 요약 + Mermaid 다이어그램)</label>
+              </div>
+              <span class="hint">Mermaid: 텍스트로 적으면 자동으로 순서도가 그려지는 도구. GitHub에서 바로 렌더링된다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d3-5" onchange="saveProgress()">
+                <label for="d3-5">재배포한다</label>
+              </div>
+            </li>
+          </ul>
+
+          <div class="day-section-title">산출물</div>
+          <div class="deliverables">
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#a855f7">build-notes.md</span>
+              <span class="deliv-desc">기술 선택·결정·데이터 흐름 기록 (Mermaid 포함)</span>
+            </div>
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#a855f7">(고도화 코드)</span>
+              <span class="deliv-desc">LLM·가드레일이 추가된 AI-네이티브 버전</span>
+            </div>
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#a855f7">(배포 URL)</span>
+              <span class="deliv-desc">갱신된 Cloudflare Pages 주소</span>
+            </div>
+          </div>
+
+          <div class="day-section-title">사용 도구</div>
+          <div class="tools-row">
+            <span class="tool-tag">Cloudflare Workers AI</span>
+            <span class="tool-tag">가드레일</span>
+            <span class="tool-tag">Mermaid (AI 생성)</span>
+          </div>
+
+          <div class="day-section-title">AI 팁</div>
+          <div class="tips-list">
+            <div class="tip-item">규칙→AI 하이브리드가 자연스러운 진화다. V1 규칙을 버리지 말고 AI로 감싸라.</div>
+            <div class="tip-item">키 없는 Workers AI로 진짜 AI를 무료로 붙인다. 첫 AI 기능에 제격이다.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 4 -->
+      <div class="acc-item" id="acc-4" data-open="false" style="--accent-color:#10b981">
+        <button class="acc-trigger" onclick="toggleAcc(4)" aria-expanded="false" aria-controls="acc-body-4">
+          <span class="acc-day-badge" style="background:#10b981">DAY 4</span>
+          <span class="acc-title">검증 — Eval·개선</span>
+          <span class="acc-summary">골든셋으로 Pass Rate를 재고, 정직한 한계를 기록하고, 사용자 피드백을 반영한다.</span>
+          <span class="acc-chevron" aria-hidden="true">&#9660;</span>
+        </button>
+        <div class="acc-body" id="acc-body-4" role="region" aria-label="DAY 4 상세">
+          <div class="day-section-title">오늘의 목표</div>
+          <div class="day-objective">AI는 틀린다. 라벨이 달린 테스트 케이스(골든셋)로 Pass Rate를 측정하고, 실패 케이스를 분석·개선하며, 사용자 피드백을 반영해 eval.md에 정직하게 기록한다.</div>
+
+          <div class="day-section-title">체크리스트</div>
+          <ul class="checklist" aria-label="DAY 4 체크리스트">
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d4-1" onchange="saveProgress()">
+                <label for="d4-1">골든셋(라벨이 달린 테스트 케이스) 15~20개를 작성한다</label>
+              </div>
+              <span class="hint">골든셋: '정답이 미리 정해진 시험 문제 모음'. Basic(일반), Edge(특이), Safety(위험) 상황을 고루 섞는다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d4-2" onchange="saveProgress()">
+                <label for="d4-2">Eval 러너로 Pass Rate를 측정한다</label>
+              </div>
+              <span class="hint">Eval 러너: 골든셋 전체를 자동으로 돌려 몇 %를 맞혔는지 계산하는 스크립트.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d4-3" onchange="saveProgress()">
+                <label for="d4-3">실패 케이스를 분석하고 개선한다 (과적합 경계 — 케이스 땜질 금지)</label>
+              </div>
+              <span class="hint">과적합: 특정 테스트만 통과하도록 고치면 실제 상황에서 더 취약해진다. 근본 원인을 고쳐야 한다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d4-4" onchange="saveProgress()">
+                <label for="d4-4">사용자 1~3명에게 피드백을 수집하고 반영한다</label>
+              </div>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d4-5" onchange="saveProgress()">
+                <label for="d4-5">eval.md(Pass Rate·골든셋·정직한 한계·피드백)를 작성한다</label>
+              </div>
+              <span class="hint">한계를 숨기면 신뢰를 잃는다. '이런 상황에서는 아직 틀린다'고 솔직하게 쓴다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d4-6" onchange="saveProgress()">
+                <label for="d4-6">재배포한다</label>
+              </div>
+            </li>
+          </ul>
+
+          <div class="day-section-title">산출물</div>
+          <div class="deliverables">
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#10b981">eval.md</span>
+              <span class="deliv-desc">Pass Rate·골든셋·정직한 한계·사용자 피드백 기록</span>
+            </div>
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#10b981">(갱신 코드)</span>
+              <span class="deliv-desc">Eval 결과가 반영된 개선 버전</span>
+            </div>
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#10b981">(배포 URL)</span>
+              <span class="deliv-desc">갱신된 Cloudflare Pages 주소</span>
+            </div>
+          </div>
+
+          <div class="day-section-title">사용 도구</div>
+          <div class="tools-row">
+            <span class="tool-tag">Eval 러너</span>
+            <span class="tool-tag">사용자 피드백</span>
+          </div>
+
+          <div class="day-section-title">AI 팁</div>
+          <div class="tips-list">
+            <div class="tip-item">'좋아졌다' 금지. Pass Rate 숫자로 말한다.</div>
+            <div class="tip-item">한계를 숨기면 신뢰를 잃는다. 과적합을 경계하라.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 5 -->
+      <div class="acc-item" id="acc-5" data-open="false" style="--accent-color:#f59e0b">
+        <button class="acc-trigger" onclick="toggleAcc(5)" aria-expanded="false" aria-controls="acc-body-5">
+          <span class="acc-day-badge" style="background:#f59e0b;color:#000">DAY 5</span>
+          <span class="acc-title">완성·공유 — 정식배포·재검증·발표</span>
+          <span class="acc-summary">정식 배포하고, 같은 사용자로 전·후를 비교하고, 4대 요소로 발표한다.</span>
+          <span class="acc-chevron" aria-hidden="true">&#9660;</span>
+        </button>
+        <div class="acc-body" id="acc-body-5" role="region" aria-label="DAY 5 상세">
+          <div class="day-section-title">오늘의 목표</div>
+          <div class="day-objective">커스텀 도메인·HTTPS로 정식 배포하고, 최종 Eval을 실행하며, DAY 1~2 사용자에게 재검증을 받아 전·후를 비교한다. 발표는 Problem·Demo·Eval·Iteration 4대 요소로 구성하되 한계를 당당히 밝힌다.</div>
+
+          <div class="day-section-title">체크리스트</div>
+          <ul class="checklist" aria-label="DAY 5 체크리스트">
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d5-1" onchange="saveProgress()">
+                <label for="d5-1">정식 배포한다 (커스텀 도메인·HTTPS 적용) + README를 정식화한다</label>
+              </div>
+              <span class="hint">커스텀 도메인: 'myapp.pages.dev' 대신 'myapp.com'처럼 우리만의 고정 주소. HTTPS: 자물쇠가 뜨는 암호화 접속.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d5-2" onchange="saveProgress()">
+                <label for="d5-2">최종 Eval을 실행한다</label>
+              </div>
+              <span class="hint">DAY 4와 같은 골든셋으로 최종 Pass Rate를 측정한다. 이 숫자가 발표의 증거가 된다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d5-3" onchange="saveProgress()">
+                <label for="d5-3">DAY 1~2에 피드백을 준 사용자에게 재검증을 요청하고, 전·후를 비교한다</label>
+              </div>
+              <span class="hint">같은 사람에게 전·후를 물어야 변화가 또렷이 보인다. 그래서 초기 사용자를 기억해야 했다.</span>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d5-4" onchange="saveProgress()">
+                <label for="d5-4">final_report.md(성과·전후 비교·한계)를 작성한다</label>
+              </div>
+            </li>
+            <li>
+              <div class="check-row">
+                <input type="checkbox" id="d5-5" onchange="saveProgress()">
+                <label for="d5-5">발표한다 (Problem·Demo·Eval·Iteration + 한계를 정직하게 포함)</label>
+              </div>
+              <span class="hint">Problem: 어떤 문제 / Demo: 어떻게 작동 / Eval: 숫자 증거 / Iteration: 어떻게 개선. 한계를 밝히는 것이 신뢰를 만든다.</span>
+            </li>
+          </ul>
+
+          <div class="day-section-title">산출물</div>
+          <div class="deliverables">
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#f59e0b">(정식 배포 URL)</span>
+              <span class="deliv-desc">커스텀 도메인 + HTTPS 적용 정식 주소</span>
+            </div>
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#f59e0b">final_report.md</span>
+              <span class="deliv-desc">성과·전후 비교·한계 종합 기록</span>
+            </div>
+            <div class="deliv-row">
+              <span class="deliv-file" style="color:#f59e0b">(발표 자료)</span>
+              <span class="deliv-desc">Problem·Demo·Eval·Iteration 4대 요소</span>
+            </div>
+          </div>
+
+          <div class="day-section-title">사용 도구</div>
+          <div class="tools-row">
+            <span class="tool-tag">Cloudflare (도메인·HTTPS)</span>
+            <span class="tool-tag">발표</span>
+          </div>
+
+          <div class="day-section-title">AI 팁</div>
+          <div class="tips-list">
+            <div class="tip-item">발표의 주인공은 코드가 아니라 '누군가의 문제를 해결한 이야기'다.</div>
+            <div class="tip-item">한계도 당당히 밝힌다. 과적합을 인정하는 팀이 더 신뢰받는다.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /accordion -->
+  </div>
+</section>
+
+<!-- ═══ 섹션 5 · 완성 예시 ═══ -->
+<section id="examples">
+  <div class="container">
+    <div class="section-label">완성 예시 · Worked Example</div>
+    <h2>5일 로드맵으로 만든 결과물</h2>
+    <p class="section-sub">같은 방법론으로 실제 완주한 두 프로젝트입니다. 숫자로 증명된 개선이 있습니다.</p>
+
+    <div class="examples-grid">
+
+      <div class="example-card">
+        <div class="example-badge">
+          <span class="badge" style="background:rgba(91,141,239,.15);color:#5b8def;border:1px solid rgba(91,141,239,.3)">5일 완주</span>
+        </div>
+        <h3>AI 클릭베이트 판별기</h3>
+        <p class="example-desc">5일 로드맵을 그대로 완주한 데모 프로젝트. 뉴스 제목이 낚시성인지 AI가 판별합니다.</p>
+        <div class="example-highlight">규칙 70.6% → AI 하이브리드 100% (+29.4%p)</div>
+        <div class="example-links">
+          <a href="https://clickbait-meter.pages.dev" target="_blank" rel="noopener">라이브 보기</a>
+          <a href="https://github.com/Samuel-Jo/clickbait-meter" target="_blank" rel="noopener">코드 보기</a>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <div class="example-badge">
+          <span class="badge" style="background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.3)">16일 원조 실증</span>
+        </div>
+        <h3>AI 사기 메시지 방패 (scam-shield)</h3>
+        <p class="example-desc">원조 16일 버전의 실증 사례. 사기 문자를 AI가 탐지하는 서비스로, 이 5일 과정의 방법론적 뿌리입니다.</p>
+        <div class="example-highlight">규칙 75% → 규칙 고도화 90% → LLM 하이브리드 95%</div>
+        <div class="example-links">
+          <a href="https://scam-shield-9uc.pages.dev" target="_blank" rel="noopener">라이브 보기</a>
+          <a href="https://github.com/Samuel-Jo/scam-shield" target="_blank" rel="noopener">코드 보기</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 섹션 6 · 산출물 6종 ═══ -->
+<section id="deliverables">
+  <div class="container">
+    <div class="section-label">산출물 가이드</div>
+    <h2>5일 산출물 6종</h2>
+    <p class="section-sub">16일 커리큘럼의 12개 문서를 5일 6개로 통합했습니다. 각 문서는 AI와 함께 만들 수 있습니다.</p>
+    <p class="deliv-note">16일 버전 12개 문서를 5일 6개로 통합 — 의도·측정·정직·배포의 핵심 가치는 그대로 유지합니다.</p>
+
+    <div class="deliverables-grid">
+
+      <div class="deliv-card">
+        <div class="file" style="color:#5b8def">spec.md</div>
+        <div class="when" style="color:#5b8def">DAY 1</div>
+        <div class="desc">문제·대상 사용자·성공 기준·핵심 기능을 한 장으로 정리한 의도 문서. 5일 내내 AI에게 붙여넣는 나침반.</div>
+      </div>
+
+      <div class="deliv-card">
+        <div class="file" style="color:#5b8def">README.md</div>
+        <div class="when" style="color:#5b8def">DAY 1 초안 → DAY 5 정식화</div>
+        <div class="desc">프로젝트 소개, 사용 방법, 한계를 담은 공개 문서. 처음엔 초안으로 시작해 DAY 5에 완성한다.</div>
+      </div>
+
+      <div class="deliv-card">
+        <div class="file" style="color:#a855f7">CHANGELOG.md</div>
+        <div class="when" style="color:#a855f7">DAY 2~5</div>
+        <div class="desc">v1·v2·v3 각 배포마다 무엇이 바뀌었는지를 날짜별로 기록. AI가 커밋 메시지에서 자동 생성.</div>
+      </div>
+
+      <div class="deliv-card">
+        <div class="file" style="color:#a855f7">build-notes.md</div>
+        <div class="when" style="color:#a855f7">DAY 3</div>
+        <div class="desc">기술 선택의 이유, 핵심 결정, 데이터 흐름(Mermaid 다이어그램). AI가 코드를 보고 자동 요약.</div>
+      </div>
+
+      <div class="deliv-card">
+        <div class="file" style="color:#10b981">eval.md</div>
+        <div class="when" style="color:#10b981">DAY 4</div>
+        <div class="desc">골든셋 Pass Rate, 실패 케이스 분석, 사용자 피드백, 정직한 한계를 담은 평가 보고서.</div>
+      </div>
+
+      <div class="deliv-card">
+        <div class="file" style="color:#f59e0b">final_report.md</div>
+        <div class="when" style="color:#f59e0b">DAY 5</div>
+        <div class="desc">5일 성과 종합, 전·후 비교, 남은 한계를 담은 최종 보고서. 발표 자료의 근거 문서.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 푸터 ═══ -->
+<footer>
+  <p>바이브코딩 5일 캠프 · 비전공 학생용 교육 사이트</p>
+  <p style="margin-top:4px">
+    <a href="https://github.com/Samuel-Jo/clickbait-meter" target="_blank" rel="noopener">clickbait-meter GitHub</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/Samuel-Jo/scam-shield" target="_blank" rel="noopener">scam-shield GitHub</a>
+  </p>
+  <p style="margin-top:8px;font-size:.75rem;color:var(--text-hint)">Cloudflare Pages 배포 예정</p>
+</footer>
+
+<!-- ═══ JavaScript ═══ -->
+<script>
+'use strict';
+
+// ─── 체크박스 ID 전체 목록 (roadmap.data.ts 와 동일) ───
+var ALL_IDS = [
+  'd1-1','d1-2','d1-3','d1-4','d1-5','d1-6',
+  'd2-1','d2-2','d2-3','d2-4',
+  'd3-1','d3-2','d3-3','d3-4','d3-5',
+  'd4-1','d4-2','d4-3','d4-4','d4-5','d4-6',
+  'd5-1','d5-2','d5-3','d5-4','d5-5'
+];
+var STORAGE_KEY = 'vibe5-progress';
+var TOTAL = ALL_IDS.length; // 26
+
+// ─── localStorage 저장 ───
+function saveProgress() {
+  var checked = {};
+  ALL_IDS.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) checked[id] = el.checked;
+  });
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(checked)); } catch(e) {}
+  updateProgressBar();
+}
+
+// ─── localStorage 복원 ───
+function loadProgress() {
+  var raw;
+  try { raw = localStorage.getItem(STORAGE_KEY); } catch(e) {}
+  if (!raw) { updateProgressBar(); return; }
+  var checked;
+  try { checked = JSON.parse(raw); } catch(e) { updateProgressBar(); return; }
+  ALL_IDS.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && checked[id]) el.checked = true;
+  });
+  updateProgressBar();
+}
+
+// ─── 초기화 ───
+function resetProgress() {
+  if (!confirm('모든 체크를 초기화하시겠습니까?')) return;
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+  ALL_IDS.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.checked = false;
+  });
+  updateProgressBar();
+}
+
+// ─── 진도율 바 갱신 ───
+function updateProgressBar() {
+  var done = ALL_IDS.reduce(function(sum, id) {
+    var el = document.getElementById(id);
+    return sum + (el && el.checked ? 1 : 0);
+  }, 0);
+  var pct = Math.round(done / TOTAL * 100);
+  var fill = document.getElementById('progress-fill');
+  var pctEl = document.getElementById('progress-pct');
+  var track = document.getElementById('progress-track');
+  if (fill) fill.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (track) track.setAttribute('aria-valuenow', pct);
+}
+
+// ─── 아코디언 토글 ───
+function toggleAcc(n) {
+  var item = document.getElementById('acc-' + n);
+  var body = document.getElementById('acc-body-' + n);
+  var trigger = item ? item.querySelector('.acc-trigger') : null;
+  if (!item) return;
+  var isOpen = item.getAttribute('data-open') === 'true';
+  item.setAttribute('data-open', isOpen ? 'false' : 'true');
+  if (trigger) trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+}
+
+// ─── 초기 실행 ───
+document.addEventListener('DOMContentLoaded', function() {
+  loadProgress();
+
+  // 스무스 스크롤 네비 처리
+  document.querySelectorAll('a.navlink[href^="#"]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      var target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // CTA 버튼 스무스 스크롤
+  document.querySelectorAll('a.btn[href^="#"]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      var target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
