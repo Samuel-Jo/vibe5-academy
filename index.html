@@ -468,7 +468,7 @@ footer a:hover{color:var(--text)}
                 <input type="checkbox" id="d1-1" onchange="saveProgress()">
                 <label for="d1-1">AI 에디터(Cursor 또는 Claude Code)·GitHub·Cloudflare Pages 계정을 셋업한다</label>
               </div>
-              <span class="hint">AI 에디터는 '내 말을 듣고 코드를 써주는 페어 프로그래머'다. 설치만으로 절반은 준비된 것.</span>
+              <span class="hint">AI 에디터는 '내 말을 듣고 코드를 써주는 페어 프로그래머'다. 설치만으로 절반은 준비된 것. 💡 셋업은 캠프 전날 미리 끝내두면, 당일은 온전히 '스펙'에 집중할 수 있다(DAY1 부하 분산).</span>
             </li>
             <li>
               <div class="check-row">
@@ -536,6 +536,8 @@ footer a:hover{color:var(--text)}
           <div class="tips-list">
             <div class="tip-item">코드보다 의도. 스펙이 흐리면 AI도 헤맨다.</div>
             <div class="tip-item">첫날 배포해두면 매일 실제 URL로 돌려볼 수 있다.</div>
+            <div class="tip-item">DAY1은 비전공자에게 가장 부담스러운 날이다. '오전=셋업, 오후=스펙'으로 나눠 보자. 셋업이 막히면 스펙부터 써도 된다.</div>
+            <div class="tip-item">이 캠프는 Cloudflare를 표준 경로로 쓴다. 만약 막히면 배포는 Vercel·Netlify, LLM은 다른 무료 모델로도 같은 5일 흐름을 그대로 진행할 수 있다(특정 회사에 묶이지 않는다).</div>
           </div>
         </div>
       </div>
@@ -609,6 +611,7 @@ footer a:hover{color:var(--text)}
           <div class="day-section-title">AI 팁</div>
           <div class="tips-list">
             <div class="tip-item">부끄러워도 작동부터. 베이스라인이 있어야 개선을 숫자로 잰다.</div>
+            <div class="tip-item">팀으로 한다면: main에 바로 올리지 말고 각자 브랜치 → PR(병합 요청) → 한 명이 리뷰 후 머지로 협업을 연습하라. 솔로면 생략해도 된다.</div>
           </div>
         </div>
       </div>
@@ -637,9 +640,9 @@ footer a:hover{color:var(--text)}
             <li>
               <div class="check-row">
                 <input type="checkbox" id="d3-2" onchange="saveProgress()">
-                <label for="d3-2">(선택) RAG 또는 도메인 데이터와 결합한다</label>
+                <label for="d3-2">(도전 과제 · 건너뛰기 가능) RAG 또는 도메인 데이터와 결합한다</label>
               </div>
-              <span class="hint">RAG: '우리 자료 창고'를 AI가 참고하게 만드는 방식. 모델을 재학습시키지 않아도 도메인 지식을 붙일 수 있다.</span>
+              <span class="hint">RAG: '우리 자료 창고'를 AI가 참고하게 만드는 방식. 모델을 재학습시키지 않아도 도메인 지식을 붙일 수 있다. ⚠️ 이건 도전 과제다. 시간이 부족하면 건너뛰어도 5일 완주에 전혀 지장 없다 — 핵심은 d3-1(LLM)과 d3-3(가드레일)이다.</span>
             </li>
             <li>
               <div class="check-row">
@@ -690,6 +693,7 @@ footer a:hover{color:var(--text)}
           <div class="tips-list">
             <div class="tip-item">규칙→AI 하이브리드가 자연스러운 진화다. V1 규칙을 버리지 말고 AI로 감싸라.</div>
             <div class="tip-item">키 없는 Workers AI로 진짜 AI를 무료로 붙인다. 첫 AI 기능에 제격이다.</div>
+            <div class="tip-item">DAY3은 5일 중 가장 어려운 날이다. LLM 연결(d3-1)과 가드레일(d3-3)에 먼저 집중하고, RAG(d3-2)는 여유가 있을 때만 도전하라.</div>
           </div>
         </div>
       </div>
@@ -727,7 +731,7 @@ footer a:hover{color:var(--text)}
                 <input type="checkbox" id="d4-3" onchange="saveProgress()">
                 <label for="d4-3">실패 케이스를 분석하고 개선한다 (과적합 경계 — 케이스 땜질 금지)</label>
               </div>
-              <span class="hint">과적합: 특정 테스트만 통과하도록 고치면 실제 상황에서 더 취약해진다. 근본 원인을 고쳐야 한다.</span>
+              <span class="hint">과적합: 특정 테스트만 통과하도록 고치면 실제 상황에서 더 취약해진다. 근본 원인을 고쳐야 한다. ⚠️ 만약 Pass Rate가 100%에 가깝게 나오면 잘한 게 아니라 '평가셋이 너무 쉽다'는 신호다 — 더 까다로운 케이스(헷갈리는 경계·일부러 속이는 적대적 사례)를 추가해 다시 측정하라.</span>
             </li>
             <li>
               <div class="check-row">
@@ -870,6 +874,7 @@ footer a:hover{color:var(--text)}
     <div class="section-label">완성 예시 · Worked Example</div>
     <h2>5일 로드맵으로 만든 결과물</h2>
     <p class="section-sub">같은 방법론으로 실제 완주한 두 프로젝트입니다. 숫자로 증명된 개선이 있습니다.</p>
+    <p style="font-size:.82rem;color:var(--text-hint);background:var(--bg-card2);border:1px solid var(--border);border-radius:7px;padding:10px 16px;margin-bottom:28px;max-width:700px">※ 이 두 예시는 실사용자 피드백 없이 만든 '기술 검증 데모'입니다. 실제 수업에서는 DAY4·5의 사용자 피드백·전·후 재검증이 핵심이며, 그 단계가 가장 중요합니다.</p>
 
     <div class="examples-grid">
 
